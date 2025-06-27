@@ -1,0 +1,20 @@
+# Ignore screenshots
+/tests/screenshots/
+
+# Environment files
+*.env
+
+# Log files
+*.log
+
+# HTML output (if not needed)
+*.html
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VSCode and PyCharm settings
+.vscode/
+.idea/
+
