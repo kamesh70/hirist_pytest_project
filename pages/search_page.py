@@ -17,24 +17,18 @@ class SearchPage(DetailPage):
         super().__init__(driver)
 
     def scroll_to_bottom(self):
-        # Find the infinite scroll container
         scrollable_div = self.driver.find_element(By.CSS_SELECTOR, "div.infinite-scroll-component")
-        # Track height or number of loaded items
         previous_height = 0
         while True:
-            # Scroll to the bottom of the scrollable div
             self.driver.execute_script("window.scrollBy(0, 5000);")
-
-            # self.driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", scrollable_div)
-            time.sleep(2)  # Wait for content to load (adjust as needed)
-            # Optionally: check for new elements to decide if scrolling is done
+            time.sleep(2)  # Wait for content to load
             items = self.driver.find_elements(By.XPATH,"//label[@class='MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd mui-style-j3syvn']") # change this to your repeating item selector
             current_count = len(items)
 
             if current_count == previous_height:
-                break  # No new items loaded → scrolling done
+                break
             previous_height = current_count
-        return current_count  # 👈 return the final count
+        return current_count
 
     def query_search_fun(self,text):
         search_page_header=self.search_fun()
@@ -71,14 +65,11 @@ class SearchPage(DetailPage):
             time.sleep(1) # time sleep use for capture new window open
 
             window_handles = self.driver.window_handles
-            # Ensure there is a second window/tab to switch to
             if len(window_handles) < 2:
                 raise Exception("Second window did not open.")
-            # Switch to second tab
             self.driver.switch_to.window(window_handles[1])
             time.sleep(1)
             print("Second window title = " + self.driver.title)
-            # Extract text
             try:
                 thanks = self.get_text(self.thanks_path)
                 print(f"Thanks text message: {thanks}")
