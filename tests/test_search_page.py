@@ -18,4 +18,4 @@ class TestSearch:
     @pytest.mark.parametrize("text",["Pytest Slenium Manual Testing Api Testing Sdet"])
     def test_check_box(self,text):
         self.search.check_box_click(text)
-        time.sleep(10)
+        time.sleep(5)
