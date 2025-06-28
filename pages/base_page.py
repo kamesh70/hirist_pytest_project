@@ -110,3 +110,19 @@ class BasePage:
 
     def wait_find_elements(self,locator):
         return self.wait.until(lambda d:d.find_elements(*locator))
+
+    def window_handle(self,original_window,locator):
+        window_handles = self.driver.window_handles
+        if len(window_handles) < 2:
+            raise Exception("Second window did not open.")
+        self.driver.switch_to.window(window_handles[1])
+        time.sleep(1)
+        print("Second window title = " + self.driver.title)
+        print(f"Second window Url: {self.current_page_url}")
+        try:
+            thanks = self.get_text(locator)
+            print(f"Thanks text message: {thanks}")
+        except Exception as e:
+            print(f"Failed to get 'thanks' text: {e}")
+        self.driver.close()
+        self.driver.switch_to.window(original_window)
