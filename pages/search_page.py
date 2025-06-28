@@ -31,6 +31,7 @@ class SearchPage(DetailPage):
         return current_count
 
     def query_search_fun(self,text):
+
         search_page_header=self.search_fun()
         assert search_page_header == "Search for Jobs, Companies, Courses"
         self.enter_text(self.input_search_path,text)
@@ -47,38 +48,27 @@ class SearchPage(DetailPage):
             original_window = self.driver.current_window_handle
             elements =self.find_elements(self.check_box_path)
             length=len(elements)
-            print(f"length of total {length}")
-            for index,ele in enumerate(elements):
-                print(f"current index {index}")
-                self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center'});", ele)
-                self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", ele)
-                time.sleep(0.3)
-                self.actions.move_to_element(ele).click().perform()
-                time.sleep(0.4)
-                if int(index) == 10 :
-                    print("brak loop")
-                    break
-            if length > 1:
-                selected = self.get_text(self.selected_check_box).strip()
-                self.click(self.apply_button)
-                print(selected)
-            time.sleep(1) # time sleep use for capture new window open
-
-            window_handles = self.driver.window_handles
-            if len(window_handles) < 2:
-                raise Exception("Second window did not open.")
-            self.driver.switch_to.window(window_handles[1])
-            time.sleep(1)
-            print("Second window title = " + self.driver.title)
-            try:
-                thanks = self.get_text(self.thanks_path)
-                print(f"Thanks text message: {thanks}")
-            except Exception as e:
-                print(f"Failed to get 'thanks' text: {e}")
-            self.driver.close()
-            self.driver.switch_to.window(original_window)
-
-
+            if length == 0:
+                print(f"enable check box is not present {length}")
+                return
+            else:
+                print(f"length of total {length}")
+                for index,ele in enumerate(elements):
+                    print(f"current index {index}")
+                    self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center'});", ele)
+                    self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", ele)
+                    time.sleep(0.3)
+                    self.actions.move_to_element(ele).click().perform()
+                    time.sleep(0.4)
+                    if int(index) == 10 :
+                        print("brak loop")
+                        break
+                if length > 1:
+                    selected = self.get_text(self.selected_check_box).strip()
+                    self.click(self.apply_button)
+                    print(selected)
+                    time.sleep(1) # time sleep use for capture new window open
+                    self.window_handle(original_window,self.thanks_path)
         except Exception as e:
             print(f"Error message:  {e}" )
 
