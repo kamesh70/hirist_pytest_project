@@ -64,8 +64,7 @@ class BasePage:
             self.capture_screenshot("find_elements_failure")
         return []
 
-    def click(self, locator):
-        """Click on an element after ensuring it's visible and interactable."""
+    def click(self, locator, retry=False):
         try:
             element = self.wait.until(EC.element_to_be_clickable(locator))
             element.click()
@@ -73,11 +72,11 @@ class BasePage:
         except (TimeoutException, NoSuchElementException, StaleElementReferenceException) as e:
             logging.error(f"Error clicking {locator}: {e}")
             print(f"click button error {locator}")
-
             self.capture_screenshot("click_failure")
-            if isinstance(e, StaleElementReferenceException):
+            if isinstance(e, StaleElementReferenceException) and not retry:
                 logging.warning(f"Retrying click for {locator}")
-                self.click(locator)  # Retry clicking the element
+                return self.click(locator, retry=True)
+            raise RuntimeError(f"Click failed on {locator}") from e
 
     @property
     def current_page_url(self):
@@ -112,6 +111,7 @@ class BasePage:
         return self.wait.until(lambda d:d.find_elements(*locator))
 
     def window_handle(self,original_window,locator):
+        self.wait_for_page_load()
         window_handles = self.driver.window_handles
         if len(window_handles) < 2:
             raise Exception("Second window did not open.")
@@ -126,3 +126,20 @@ class BasePage:
             print(f"Failed to get 'thanks' text: {e}")
         self.driver.close()
         self.driver.switch_to.window(original_window)
+
+
+    def scroll_to_bottom(self):
+        scrollable_div = self.driver.find_element(By.CSS_SELECTOR, "div.infinite-scroll-component")
+        previous_height = 0
+        while True:
+            self.driver.execute_script("window.scrollBy(0, 5000);")
+            self.wait_for_page_load()
+            time.sleep(2)  # Wait for content to load
+            items = self.driver.find_elements(By.XPATH,"//label[@class='MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd mui-style-j3syvn']") # change this to your repeating item selector
+            current_count = len(items)
+            print(current_count)
+
+            if current_count == previous_height:
+                break
+            previous_height = current_count
+        return current_count

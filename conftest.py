@@ -1,17 +1,24 @@
-import logging
+#conftest.py
 
-import pytest
-from selenium import webdriver
+import pytest,logging
+from config.config_manager import ConfigManager
 from pages.login_page import LoginPage
 from config.config_page import EMAIL,PASSWORD
+from utils.drivers_manager import get_driver
 
 @pytest.fixture
 def driver():
-    driver= webdriver.Firefox()
+    config = ConfigManager.get_config()
+    browser = config.get("browser")  # 'chrome' or 'firefox' or browser = config.get("browser", "firefox")
+    base_url = config.get("base_url")   #  or  base_url = config.get("base_url", "https://default-url.com")
+
+    driver = get_driver(browser)  # ✅ instantiate WebDriver here
     driver.maximize_window()
     driver.implicitly_wait(30)
-    driver.get("https://www.hirist.tech/")
+    driver.get(base_url)
+
     yield driver
+
     driver.quit()
 
 @pytest.fixture(scope="function")

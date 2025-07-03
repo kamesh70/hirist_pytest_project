@@ -1,0 +1,12 @@
+#config.yaml
+browser: chrome
+#browser: firefox
+
+# reports_dir: reports/
+base_url: "https://www.hirist.tech/"
+
+
+# page_urls:
+#   tv-shows: "tv-shows"
+#   movies: "movies"
+
