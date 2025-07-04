@@ -1,11 +1,9 @@
-import logging
-import os
-import time
+# pages/base_page.py
+import time,os,logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import (
-    TimeoutException, NoSuchElementException, StaleElementReferenceException)
+from selenium.common.exceptions import (TimeoutException, NoSuchElementException, StaleElementReferenceException)
 from datetime import datetime
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -110,7 +108,8 @@ class BasePage:
     def wait_find_elements(self,locator):
         return self.wait.until(lambda d:d.find_elements(*locator))
 
-    def window_handle(self,original_window,locator):
+        """function accept 2 value , if locator does not want to pass we set as locator=None and also sent condition if locator present go to inner loop """
+    def window_handle(self,original_window,locator=None):
         self.wait_for_page_load()
         window_handles = self.driver.window_handles
         if len(window_handles) < 2:
@@ -119,14 +118,16 @@ class BasePage:
         time.sleep(1)
         print("Second window title = " + self.driver.title)
         print(f"Second window Url: {self.current_page_url}")
-        try:
-            thanks = self.get_text(locator)
-            print(f"Thanks text message: {thanks}")
-        except Exception as e:
-            print(f"Failed to get 'thanks' text: {e}")
+        second_window=self.current_page_url
+        if locator:
+            try:
+                thanks = self.get_text(locator)
+                print(f" text message: {thanks}")
+            except Exception as e:
+                print(f"Failed to get  text: {e}")
         self.driver.close()
         self.driver.switch_to.window(original_window)
-
+        return second_window
 
     def scroll_to_bottom(self):
         scrollable_div = self.driver.find_element(By.CSS_SELECTOR, "div.infinite-scroll-component")
