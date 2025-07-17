@@ -18,5 +18,5 @@ class Test_login:
 
     def test_driver_login(self):
         self.login.driver_login(EMAIL,PASSWORD) #valid password and email
-        time.sleep(100)
+        time.sleep(5)
 

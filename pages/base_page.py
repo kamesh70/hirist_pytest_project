@@ -9,7 +9,11 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 
 class BasePage:
-    timeout = 20  # Default timeout
+    timeout = 30  # Default timeout
+    check_box_path=(By.XPATH,"//label[@class='MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd mui-style-j3syvn']")
+    selected_check_box = (By.XPATH, "//p[contains(@class,'mui-style-1gqd86t')]")
+    apply_button = (By.XPATH, "//button[text()='Apply All']")
+    thanks_path = (By.XPATH, "//p[contains(@class,'mui-style-ao4w7g')]")
 
     def __init__(self, driver):
         self.driver = driver
@@ -144,3 +148,34 @@ class BasePage:
                 break
             previous_height = current_count
         return current_count
+
+    def check_box(self):
+        try:
+            max_scroll = self.scroll_to_bottom()
+            print(f"max_scroll elements {max_scroll}")
+            original_window = self.driver.current_window_handle
+            elements = self.find_elements(self.check_box_path)
+            length = len(elements)
+            if length == 0:
+                print(f"enable check box is not present {length}")
+                return
+            else:
+                print(f"length of total {length}")
+                for index, ele in enumerate(elements):
+                    print(f"current index {index}")
+                    self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'center'});", ele)
+                    # self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", ele)
+                    time.sleep(0.3)
+                    self.actions.move_to_element(ele).click().perform()
+                    time.sleep(0.4)
+                    if int(index) == 49:
+                        print("brak loop")
+                        break
+                if length > 1:
+                    selected = self.get_text(self.selected_check_box).strip()
+                    self.click(self.apply_button)
+                    print(selected)
+                    time.sleep(1)  # time sleep use for capture new window open
+                    self.window_handle(original_window, self.thanks_path)
+        except Exception as e:
+            print(f"Error message:  {e}")

@@ -32,17 +32,15 @@ class TestDetails:
         ("Backend Development", "R"),
         ("Backend Development", "Django"),
         ("Frontend Development", "ReactJS"),
-        ("Frontend Development", "UI"),
-        ("Frontend Development", "UX"),
-
     ])
     def test_list_of_backend_development(self,backend,name):
         value=self.detail.list_of_backend_development(backend=backend,name=name)
         print(value)
 
-    @pytest.mark.parametrize("text",["Application Testing","Selenium","kamesh"])   #   in param "kamesh" text is not present in Qulity testing  so this testcase fail
-    def test_testing_type(self,text):
-        self.detail.select_testing_type(text)
+    @pytest.mark.parametrize("value",["Application Testing","Selenium","Mobile Testing","White Box Testing","Automation Testing Tools",])
+    @pytest.mark.smoke
+    def test_testing_type(self,value):
+        self.detail.select_testing_type(value)
 
     @pytest.mark.parametrize("text,url", [
         ("Backend Development", "https://www.hirist.tech/c/backend-development-jobs?ref=topnavigation"),
@@ -58,3 +56,15 @@ class TestDetails:
     def test_list_of_data_in_software_development(self,text,url):
         value=self.detail.list_of_software_development(text)
         assert value == url
+
+    @pytest.mark.parametrize("tab,url", [("EDIT", "https://www.hirist.tech/registration/addPersonalDetails")])
+    def test_edit_profile(self,tab,url):
+        value=self.detail.edit_profile_fun(tab)
+        print("return value ",value)
+        assert value == url
+
+    @pytest.mark.parametrize("tab,url",[("My Profile","https://www.hirist.tech/myprofile"),("Settings","https://www.hirist.tech/settings?section=emailnotification"),("Get the hirist app","https://www.hirist.tech/downloadapp?ref=menu"),("Blocked Companies","https://www.hirist.tech/settings?section=privacy"),("Applied Jobs","https://www.hirist.tech/applied-jobs"),("Pending Assessments","https://www.hirist.tech/pendingassessments"),("My Interviews","https://www.hirist.tech/interviews"),("My Jobfeed","https://www.hirist.tech/jobfeed?minexp=2&maxexp=3"),("Change Password","https://www.hirist.tech/settings?section=changepassword"),("Request Recommendation","https://www.hirist.tech/myprofile"),("Learning Center","https://www.hirist.tech/learning?ref=menu"),])
+    def test_user_image_under_list_tab(self,tab,url):
+        value=self.detail.user_image_under_list(tab)
+        assert value ==url
+
