@@ -1,11 +1,14 @@
 # Ignore screenshots
 /tests/screenshots/
+screenshots/
+assets
 
 # Environment files
 *.env
 
 # Log files
 *.log
+*.log.save
 
 # HTML output
 *.html
