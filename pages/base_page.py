@@ -14,6 +14,7 @@ class BasePage:
     selected_check_box = (By.XPATH, "//p[contains(@class,'mui-style-1gqd86t')]")
     apply_button = (By.XPATH, "//button[text()='Apply All']")
     thanks_path = (By.XPATH, "//p[contains(@class,'mui-style-ao4w7g')]")
+    no_result_path=(By.XPATH,"//h1[text()='Sorry, No result found :(']")
 
     def __init__(self, driver):
         self.driver = driver
@@ -151,8 +152,14 @@ class BasePage:
 
     def check_box(self):
         try:
+            no_result = self.find_element(self.no_result_path)
+            if no_result and no_result.is_displayed():
+                print(f"check box is not present : {no_result.text}")
+                return
             max_scroll = self.scroll_to_bottom()
-            print(f"max_scroll elements {max_scroll}")
+            if max_scroll == 0:
+                print(f"max_scroll elements {max_scroll}  Return Function call ")
+                return
             original_window = self.driver.current_window_handle
             elements = self.find_elements(self.check_box_path)
             length = len(elements)
